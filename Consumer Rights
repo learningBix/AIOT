@@ -1,0 +1,27 @@
+import pandas as pd
+import numpy as np
+from tensorflow.python.keras.layers import Input,Dense
+from tensorflow.python.keras.models import Model
+data=pd.read_csv('consumer_right.csv')
+print("Shape of data", data.shape)
+print("\nFeatures",data.columns)
+X=data[data.columns[1:-1]]
+Y=data[data.columns[-1]]
+print("\nFeature matrix\n",X.head())
+print("\nResponse matrix\n",Y.head())
+
+input1=Input(shape=(1,))
+i1=Dense(10,activation='relu')(input1)
+i2=Dense(50,activation='relu')(i1)
+i3=Dense(50,activation='relu')(i2)
+out=Dense(2)(i3)
+
+model=Model(inputs=input1,outputs=[out])
+model.compile(
+    optimizer='adam',
+    loss=['mean_squared_error']
+)
+history=model.fit(X,Y,epochs=1000,batch_size=2)
+# output
+y_predict=model.predict([4])
+print("Prediction: ",y_predict)
