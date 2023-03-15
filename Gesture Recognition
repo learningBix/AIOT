@@ -1,0 +1,47 @@
+import cv2
+import time
+import serial
+import pyfirmata
+
+
+
+board = pyfirmata.Arduino('COM7')
+# treat this key like a password and keep it secret!
+from mlforkids import MLforKidsImageProject
+key = "13f3dc40-5f29-11ed-b200-8be43c5f9617e022b294-4bb9-410a-b8b9-818944ab96f4"
+# this will train your model and might take a little while
+myproject = MLforKidsImageProject(key)
+myproject.train_model()
+while True:
+    videoCaptureObject = cv2.VideoCapture(0)
+    result = 0
+    while(result<2):
+        time.sleep(2)
+        ret,frame = videoCaptureObject.read()
+        cv2.imwrite("image.jpg",frame)
+        result += 1
+        print(result)
+    cv2.imshow('frame', frame)
+    # videoCaptureObject.release()
+    # cv2.destroyAllWindows()
+    # CHANGE THIS to the image file you want to recognize
+    demo = myproject.prediction("image.jpg")
+    label = demo["class_name"]
+    confidence = demo["confidence"]
+
+
+
+    if label=="On" and confidence>=50 :
+      board.digital[13].write(1)
+      time.sleep(10)
+      print("Water will be on for 10 seconds")
+
+    elif label=="Water" and confidence>=50 :
+        board.digital[13].write(1)
+        time.sleep(10)
+        print("Water will be on for 10 seconds")
+
+    else:
+        board.digital[13].write(0)
+        print("Water will be on for 10 seconds")
+        print("light off")
