@@ -1,0 +1,33 @@
+from tensorflow.python.keras.layers import Input, Dense
+from tensorflow.python.keras.models import Model
+import pandas as pd
+# reading csv file
+data = pd.read_csv('food_quality_prediction_data.csv')
+# shape of dataset
+print("Shape:", data.shape)
+# column names
+print("\nFeatures:", data.columns)
+# storing the feature matrix (X) and response vector (y)
+X = data[data.columns[1:-1]]
+y = data[data.columns[-1]]
+# printing first 5 rows of feature matrix
+print("\nFeature matrix:\n", X.head())
+# printing first 5 values of response vector
+print("\nResponse vector:\n", y.head())
+
+# import numpy as np
+
+
+input1 = Input(shape=(3,))
+l1 = Dense(10, activation='relu')(input1)
+l2 = Dense(50, activation='relu')(l1)
+l3 = Dense(50, activation='relu')(l2)
+out = Dense(2)(l3)
+model = Model(inputs=input1, outputs=[out])
+model.compile(
+ optimizer='adam',
+ loss=['mean_squared_error']
+ )
+history = model.fit(X, y, epochs=1000, batch_size=2)
+y_predict = model.predict([[[200], [100], [38]]])
+print("Prediction:  ", y_predict)
