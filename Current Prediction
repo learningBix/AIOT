@@ -1,15 +1,19 @@
 import pandas as pd
 from sklearn.neighbors import KNeighborsClassifier
-
-data = pd.read_csv('sensor_data2.csv')
-print("Shape of data", data.shape)
-print('\nfeatures: ', data.columns)
-X = data[data.columns[:-1]]
-Y = data[data.columns[-1]]
-print('\nFeatured matrix\n', X.head())
-print("\nResponse matrix\n", Y.head())
-
+#reading csv file
+data=pd.read_csv('current.csv')
+#shape of dataset
+print('Shape',data.shape)
+#column names
+print('\nFeatures: ', data.columns)
+#storing the feature matrix (x) and response matrix (y)
+x=data[data.columns[:-1]]
+y=data[data.columns[-1]]
+#printing first 5 rows of feature matrix
+print('\nFeature Matrix:\n',x.head())
+#printing first 5 values of response vector
+print('\nResponse vector:\n', y.head())
 knn = KNeighborsClassifier(n_neighbors=3)
-knn.fit(X, Y)
-predicted = knn.predict([[1.2]])
+knn.fit(x,y)
+predicted= knn.predict([[1.2]]) #manually input the values from the arduino in the arguments of the knn.predict()
 print(predicted)
