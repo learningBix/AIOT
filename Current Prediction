@@ -1,0 +1,15 @@
+import pandas as pd
+from sklearn.neighbors import KNeighborsClassifier
+
+data = pd.read_csv('sensor_data2.csv')
+print("Shape of data", data.shape)
+print('\nfeatures: ', data.columns)
+X = data[data.columns[:-1]]
+Y = data[data.columns[-1]]
+print('\nFeatured matrix\n', X.head())
+print("\nResponse matrix\n", Y.head())
+
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X, Y)
+predicted = knn.predict([[1.2]])
+print(predicted)
