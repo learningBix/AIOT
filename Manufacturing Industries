@@ -1,0 +1,23 @@
+import pandas as pd
+import numpy as np
+from tensorflow.python.keras.layers import Input, Dense
+from tensorflow.python.keras.models import Model
+data=pd.read_csv('Manufacturing_industries.csv')
+print("Shape: ",data.shape)
+X=data[data.columns[1:-1]]
+Y=data[data.columns[-1]]
+print("\n Featured matrix:\n",X.head())
+print("\n Response matrix:\n",Y.head())
+input1=Input(shape=(1,))
+I1=Dense(10,activation='relu')(input1)
+I2=Dense(50,activation='relu')(I1)
+I3=Dense(50,activation='relu')(I2)
+out=Dense(2)(I3)
+model=Model(inputs=input1,outputs=[out])
+model.compile(
+    optimizer='adam',
+    loss=['mean_squared_error']
+)
+history=model.fit(X,Y,epochs=1000,batch_size=2)
+y_predict=model.predict([135])
+print(y_predict)
