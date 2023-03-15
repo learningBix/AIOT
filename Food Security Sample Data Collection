@@ -1,0 +1,30 @@
+import serial
+arduino_port="COM4"
+baud=9600
+filename="sensor-data.csv"
+ser=serial.Serial(arduino_port,baud)
+print("connected")
+file=open(filename,"a")
+print("Created a file")
+sample=100
+print_labels=False
+line=0
+while line<=sample:
+ if print_labels:
+  if line==0:
+   print("printing the columns")
+  else:
+   print("line"+str(line)+": writing..")
+ getdata=str(ser.readline())
+ data=getdata[2:][:3]
+ data=data.strip("\n")
+ print(data)
+ file=open(filename,"a")
+ file.write(data+"\n")
+ line=line+1
+print("dara collection completed")
+file.close()
+# create 3 category
+# 0=no food
+# 1=fresh food
+# 2=spoiled food
