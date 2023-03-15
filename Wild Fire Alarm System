@@ -1,0 +1,55 @@
+# from mlforkids import MLforKidsImageProject
+#
+# # treat this key like a password and keep it secret!
+# key = "6bad1e50-6240-11ed-806c-bb7c2d2e6f6f4eab9442-0204-4a7c-b9c4-8e69661b186f"
+#
+# # this will train your model and might take a little while
+# myproject = MLforKidsImageProject(key)
+# myproject.train_model()
+#
+# # CHANGE THIS to the image file you want to recognize
+# demo = myproject.prediction("test.jpg")
+#
+# label = demo["class_name"]
+# confidence = demo["confidence"]
+#
+# # CHANGE THIS to do something different with the result
+# print ("result: '%s' with %d%% confidence" % (label, confidence))
+
+
+from mlforkids1 import MLforKidsImageProject
+import cv2
+import time
+import serial
+arduino=serial.Serial(port='COM7',baudrate=115200,timeout=1)
+# treat this key like a password and keep it secret!
+key = "b2748f90-61bd-11ed-b277-3ba15acc84399cf5fd57-aca6-4693-9f60-43fa1e451332"
+
+# this will train your model and might take a little while
+
+video_object=cv2.VideoCapture(0)
+result=0
+while(result<2):
+    time.sleep(2)
+    ret,frame=video_object.read()
+    cv2.imwrite("my_test.jpg",frame)
+    result+=1
+
+video_object.release()
+cv2.destroyAllWindows()
+
+myproject = MLforKidsImageProject(key)
+myproject.train_model()
+
+demo = myproject.prediction("test.jpg")
+label = demo["class_name"]
+confidence = demo["confidence"]
+
+# CHANGE THIS to do something different with the result
+print ("result: '%s' with %d%% confidence" % (label, confidence))
+if label=="fire" :
+    arduino.write(bytes("1", 'utf-8'))
+    print("Starting the pump")
+elif label=="safe" and confidence>=80:
+    arduino.write(bytes("0", 'utf-8'))
+    print("Turnning pump off")
